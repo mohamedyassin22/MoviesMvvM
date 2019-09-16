@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="movie"
+            type="com.movies.moviesmvvm.model.Movie" />
+
+        <!--<variable-->
+            <!--name="clickHandler"-->
+            <!--type="com.movies.moviesmvvm.adapter.MoviesAdapter.ClickHandlers" />-->
+    </data>
+    <!-- //ToDo 15: handel click listener-->
+    <LinearLayout
+        android:id="@+id/movies_layout"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:minHeight="72dp"
+        android:orientation="horizontal"
+        android:padding="1dp">
+
+        <ImageView
+            android:id="@+id/item_movie_poster"
+            loadImage="@{movie.posterPath}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:paddingRight="16dp"
+            android:text="@{movie.title}"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+</layout>

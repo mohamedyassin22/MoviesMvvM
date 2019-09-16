@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MoviesMvvm</string>
+    <string name="api_key" translatable="false">f6e0298cc8b4ef5eb6ecd99765510e60</string>
 </resources>
