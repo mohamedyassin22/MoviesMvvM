@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.movies.moviesmvvm.R;
 import com.movies.moviesmvvm.adapter.movieExpandableListAdapter;
 import com.movies.moviesmvvm.databinding.ActivityMainBinding;
-import com.movies.moviesmvvm.model.HeaderList;
+import com.movies.moviesmvvm.model.ExpandableList;
 import com.movies.moviesmvvm.model.Movie;
 import com.movies.moviesmvvm.model.MoviesResponse;
 import com.movies.moviesmvvm.rest.ApiClient;
@@ -30,23 +30,19 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     private static String API_KEY;
     private Context mContext;
-    List<HeaderList>  listDataHeader = new ArrayList<>();
-    HashMap<String, List<Movie>> listDataChild  = new HashMap<>();
-    HeaderList headerList;
+    List<ExpandableList> expandableLists = new ArrayList<>();
+
 
     movieExpandableListAdapter listAdapter;
-    ExpandableListView expListView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        expListView = findViewById(R.id.lvExp);
-//        final ActivityMainBinding activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        final ActivityMainBinding activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         API_KEY = getString(R.string.api_key);
         mContext = this;
-        headerList=new HeaderList("PopularMovies",0);
-
         ApiInterface service = ApiClient.getClient().create(ApiInterface.class);
 
         Call<MoviesResponse> call = service.getPopularMovies(API_KEY);
@@ -56,47 +52,33 @@ public class MainActivity extends AppCompatActivity {
 
                 List<Movie> movies = null;
                 if (response.body() != null) {
-                    listDataHeader.add(headerList);
                     movies = response.body().getResults();
-                    listDataChild.put(listDataHeader.get(0).getHeader(),movies);
-                    //ToDo 21: set data binding adapter with new instance of Movie Adapter
-                    listAdapter=new movieExpandableListAdapter(mContext,
-                            listDataHeader,listDataChild,movies);
-                    expListView.setAdapter(listAdapter);
-                    // Listview Group click listener
-                    expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-
-                        @Override
-                        public boolean onGroupClick(ExpandableListView parent, View v,
-                                                    int groupPosition, long id) {
-                            // Toast.makeText(getApplicationContext(),
-                            // "Group Clicked " + listDataHeader.get(groupPosition),
-                            // Toast.LENGTH_SHORT).show();
-                            return false;
-                        }
-                    });
+                    ExpandableList popularMovies = new ExpandableList("PopularMovies", movies);
+                    expandableLists.add(popularMovies);
+                    listAdapter = new movieExpandableListAdapter(mContext,
+                            expandableLists);
+                    activityMainBinding.setAdapter(listAdapter);
 
                     // Listview Group expanded listener
-                    expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-
-                        @Override
-                        public void onGroupExpand(int groupPosition) {
-                            Toast.makeText(getApplicationContext(),
-                                    listDataHeader.get(groupPosition) + " Expanded",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-//                    activityMainBinding.setAdapter(new movieExpandableListAdapter(mContext,
-//                            listDataHeader,listDataChild,movies));
-                    //recyclerView.setAdapter(new MoviesAdapter(mContext, movies));
+//                    expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+//                        int previousGroup = -1;
+//                        @Override
+//                        public void onGroupExpand(int groupPosition) {
+//                            if ((previousGroup != -1) && (groupPosition != previousGroup)) {
+//                                expListView.collapseGroup(previousGroup);
+//                            }
+//                            previousGroup = groupPosition;
+//                        }
+//                    });
+//
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<MoviesResponse> call, @NonNull Throwable t) {
-                Log.e("error",t.getMessage());
+                Log.e("error", t.getMessage());
             }
         });
     }
-    }
+}
 
