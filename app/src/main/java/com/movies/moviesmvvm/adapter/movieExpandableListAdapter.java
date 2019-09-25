@@ -1,7 +1,6 @@
 package com.movies.moviesmvvm.adapter;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,7 +15,6 @@ import com.movies.moviesmvvm.model.ExpandableList;
 import com.movies.moviesmvvm.model.Movie;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class movieExpandableListAdapter extends BaseExpandableListAdapter {
@@ -68,7 +66,6 @@ public class movieExpandableListAdapter extends BaseExpandableListAdapter {
         childHolder.horizontalListView.setAdapter(horizontalListAdapter);
 
 
-
         return convertView;
     }
 
@@ -103,7 +100,6 @@ public class movieExpandableListAdapter extends BaseExpandableListAdapter {
             LayoutInflater userInflater = (LayoutInflater) this._context.getSystemService(this._context.LAYOUT_INFLATER_SERVICE);
             convertView = userInflater.inflate(R.layout.parent_group, null);
             convertView.setHorizontalScrollBarEnabled(true);
-
             parentHolder = new ParentHolder();
             convertView.setTag(parentHolder);
 
