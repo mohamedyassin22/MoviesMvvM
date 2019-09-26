@@ -137,4 +137,9 @@ public class movieExpandableListAdapter extends BaseExpandableListAdapter {
         TextView moviesType;
         ImageView indicator;
     }
+
+    public void addItem(List<ExpandableList> expandableLists) {
+        this.expandableLists.addAll(expandableLists);
+        notifyDataSetChanged();
+    }
 }
