@@ -1,5 +1,7 @@
 package com.movies.moviesmvvm.view_model;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.util.Log;
 
@@ -9,7 +11,7 @@ import com.movies.moviesmvvm.model.MoviesResponse;
 import com.movies.moviesmvvm.rest.ApiClient;
 import com.movies.moviesmvvm.rest.ApiInterface;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -21,14 +23,16 @@ import io.reactivex.schedulers.Schedulers;
 public class MainViewModel extends ViewModel {
     private static final String TAG = MainViewModel.class.getSimpleName();
 
-    List<ExpandableList> expandableLists = new ArrayList<>();
+
+    private MutableLiveData<List<ExpandableList>> expandableLists = new MutableLiveData<>();
     private String apiKey;
 
     public MainViewModel(String apiKey) {
         this.apiKey = apiKey;
+        loadMovies();
     }
 
-    public void loadMovies(final OnDataLoadListener onDataLoadListener) {
+    public void loadMovies() {
         // we can copy it from the MainActivity
 
         Log.d(TAG, "Load Movies Called");
@@ -49,8 +53,7 @@ public class MainViewModel extends ViewModel {
                         List<Movie> movies = null;
                         if (moviesResponse.getResults() != null) {
                             movies = moviesResponse.getResults();
-                            ExpandableList popularMovies = new ExpandableList("PopularMovies", movies);
-                            expandableLists.add(popularMovies);
+                            final ExpandableList popularMovies = new ExpandableList("PopularMovies", movies);
                             Observable<MoviesResponse> upcomingCall = service.getUpcomingMovies(apiKey);
                             upcomingCall.subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
@@ -65,8 +68,7 @@ public class MainViewModel extends ViewModel {
                                             List<Movie> movies = null;
                                             if (moviesResponse.getResults() != null) {
                                                 movies = moviesResponse.getResults();
-                                                ExpandableList upcomingMovies = new ExpandableList("Upcoming", movies);
-                                                expandableLists.add(upcomingMovies);
+                                                final ExpandableList upcomingMovies = new ExpandableList("Upcoming", movies);
                                                 Observable<MoviesResponse> nowPlayingCall = service.getNowPlayingMovies(apiKey);
                                                 nowPlayingCall.subscribeOn(Schedulers.io())
                                                         .observeOn(AndroidSchedulers.mainThread())
@@ -81,8 +83,7 @@ public class MainViewModel extends ViewModel {
                                                                 List<Movie> movies = null;
                                                                 if (moviesResponse.getResults() != null) {
                                                                     movies = moviesResponse.getResults();
-                                                                    ExpandableList nowPlayingMovies = new ExpandableList("Now Playing", movies);
-                                                                    expandableLists.add(nowPlayingMovies);
+                                                                    final ExpandableList nowPlayingMovies = new ExpandableList("Now Playing", movies);
                                                                     Observable<MoviesResponse> topRatedCall = service.getTopRatedMovies(apiKey);
                                                                     topRatedCall.subscribeOn(Schedulers.io())
                                                                             .observeOn(AndroidSchedulers.mainThread())
@@ -98,14 +99,18 @@ public class MainViewModel extends ViewModel {
                                                                                     if (moviesResponse.getResults() != null) {
                                                                                         movies = moviesResponse.getResults();
                                                                                         ExpandableList topRatedMovies = new ExpandableList("Top Rated", movies);
-                                                                                        expandableLists.add(topRatedMovies);
-                                                                                        onDataLoadListener.onSuccess(expandableLists);
+                                                                                        expandableLists.setValue(Collections.singletonList(popularMovies));
+                                                                                        expandableLists.setValue(Collections.singletonList(upcomingMovies));
+                                                                                        expandableLists.setValue(Collections.singletonList(nowPlayingMovies));
+                                                                                        expandableLists.setValue(Collections.singletonList(topRatedMovies));
+                                                                                    } else {
+                                                                                        expandableLists.setValue(null);
                                                                                     }
                                                                                 }
 
                                                                                 @Override
                                                                                 public void onError(Throwable e) {
-                                                                                    onDataLoadListener.onFailure();
+                                                                                    expandableLists.setValue(null);
 
                                                                                 }
 
@@ -115,12 +120,14 @@ public class MainViewModel extends ViewModel {
                                                                                 }
                                                                             });
 
+                                                                } else {
+                                                                    expandableLists.setValue(null);
                                                                 }
                                                             }
 
                                                             @Override
                                                             public void onError(Throwable e) {
-                                                                onDataLoadListener.onFailure();
+                                                                expandableLists.setValue(null);
 
                                                             }
 
@@ -130,12 +137,14 @@ public class MainViewModel extends ViewModel {
                                                             }
                                                         });
 
+                                            } else {
+                                                expandableLists.setValue(null);
                                             }
                                         }
 
                                         @Override
                                         public void onError(Throwable e) {
-                                            onDataLoadListener.onFailure();
+                                            expandableLists.setValue(null);
 
                                         }
 
@@ -144,12 +153,14 @@ public class MainViewModel extends ViewModel {
 
                                         }
                                     });
+                        } else {
+                            expandableLists.setValue(null);
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        onDataLoadListener.onFailure();
+                        expandableLists.setValue(null);
 
                     }
 
@@ -162,11 +173,9 @@ public class MainViewModel extends ViewModel {
 
     }
 
-    public interface OnDataLoadListener {
-
-        void onSuccess(List<ExpandableList> expandableLists);
-
-        void onFailure();
+    public LiveData<List<ExpandableList>> getMovies() {
+        return expandableLists;
     }
+
 
 }

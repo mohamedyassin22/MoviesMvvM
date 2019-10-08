@@ -1,9 +1,11 @@
 package com.movies.moviesmvvm.activity;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -39,18 +41,18 @@ public class MainActivity extends AppCompatActivity {
         final MainViewModel mainViewModel = ViewModelProviders.of(this, new MainViewModelFactory(API_KEY)).get(MainViewModel.class);
 
 
-        mainViewModel.loadMovies(new MainViewModel.OnDataLoadListener() {
+        mainViewModel.getMovies().observe(this, new Observer<List<ExpandableList>>() {
             @Override
-            public void onSuccess(List<ExpandableList> expandableLists) {
-                listAdapter.addItem(expandableLists);
-                activityMainBinding.lvExp.setVisibility(View.VISIBLE);
-                activityMainBinding.pbLoading.setVisibility(View.GONE);
-            }
+            public void onChanged(@Nullable List<ExpandableList> expandableLists) {
+                if (expandableLists != null) {
+                    listAdapter.addItem(expandableLists);
+                    activityMainBinding.lvExp.setVisibility(View.VISIBLE);
+                    activityMainBinding.pbLoading.setVisibility(View.GONE);
+                } else {
+                    activityMainBinding.pbLoading.setVisibility(View.GONE);
+                    Toast.makeText(mContext, R.string.error, Toast.LENGTH_LONG).show();
+                }
 
-            @Override
-            public void onFailure() {
-                activityMainBinding.pbLoading.setVisibility(View.GONE);
-                Toast.makeText(mContext, R.string.error, Toast.LENGTH_LONG).show();
             }
         });
 

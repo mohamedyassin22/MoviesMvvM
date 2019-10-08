@@ -46,11 +46,6 @@ public class movieExpandableListAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//            MoviesListItemBinding   moviesListItemBinding =
-//                    DataBindingUtil.inflate(infalInflater, R.layout.movies_list_item,
-//                            parent, false);
-//            moviesListItemBinding.setMovie(movie);
-//            convertView = moviesListItemBinding.getRoot();
             convertView = infalInflater.inflate(R.layout.item_group_child, parent, false);
             childHolder = new ChildHolder();
             convertView.setTag(childHolder);
