@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.movies.moviesmvvm.Injection;
 import com.movies.moviesmvvm.R;
 import com.movies.moviesmvvm.adapter.movieExpandableListAdapter;
 import com.movies.moviesmvvm.databinding.ActivityMainBinding;
@@ -32,13 +33,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         final ActivityMainBinding activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        API_KEY = getString(R.string.api_key);
         mContext = this;
         listAdapter = new movieExpandableListAdapter(mContext, expandableLists);
         activityMainBinding.lvExp.setVisibility(View.GONE);
         activityMainBinding.pbLoading.setVisibility(View.VISIBLE);
         activityMainBinding.setAdapter(listAdapter);
-        final MainViewModel mainViewModel = ViewModelProviders.of(this, new MainViewModelFactory(API_KEY)).get(MainViewModel.class);
+        final MainViewModel mainViewModel = ViewModelProviders.of(this,
+                new MainViewModelFactory(Injection.provideMovieRepository(this)))
+                .get(MainViewModel.class);
 
 
         mainViewModel.getMovies().observe(this, new Observer<List<ExpandableList>>() {
