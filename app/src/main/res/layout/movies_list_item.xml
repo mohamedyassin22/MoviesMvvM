@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -12,35 +13,41 @@
             <!--type="com.movies.moviesmvvm.adapter.MoviesAdapter.ClickHandlers" />-->
     </data>
     <!-- //ToDo 15: handel click listener-->
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/movies_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:minHeight="72dp"
         android:padding="1dp">
 
         <ImageView
             android:id="@+id/item_movie_poster"
             loadImage="@{movie.posterPath}"
-            android:layout_width="90dp"
-            android:layout_height="140dp"
-            android:adjustViewBounds="true" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="90dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:paddingRight="16dp"
+            android:background="@android:color/black"
+            android:gravity="center"
             android:text="@{movie.title}"
+            android:lines="2"
             android:textAlignment="center"
-
+            android:padding="8dp"
             android:textSize="12sp"
-            android:textStyle="bold" />
+            android:textColor="@color/colorWhite"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/item_movie_poster"
+            app:layout_constraintEnd_toEndOf="@+id/item_movie_poster"
+            app:layout_constraintStart_toStartOf="@+id/item_movie_poster" />
 
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

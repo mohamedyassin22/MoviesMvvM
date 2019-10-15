@@ -1,9 +1,6 @@
 package com.movies.moviesmvvm.adapter;
 
 import android.content.Context;
-import android.databinding.DataBindingUtil;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -13,18 +10,22 @@ import com.movies.moviesmvvm.model.Movie;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.RecyclerView;
+
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
     private List<Movie> movies;
     private Context context;
 
-    public MovieAdapter(Context context, List<Movie> movies) {
+    public MovieAdapter(List<Movie> movies) {
         this.movies = movies;
-        this.context = context;
     }
     @NonNull
     @Override
     public MovieAdapter.MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        context = parent.getContext();
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
         MoviesListItemBinding listItemsBinding = DataBindingUtil.inflate(layoutInflater, R.layout.movies_list_item, parent, false);
 
         return new MovieViewHolder(listItemsBinding);
@@ -46,5 +47,10 @@ private MoviesListItemBinding moviesListItemBinding;
             super(moviesListItemBinding.getRoot());
             this.moviesListItemBinding = moviesListItemBinding;
         }
+    }
+
+    public void addItem(List<Movie> movies) {
+        this.movies.addAll(movies);
+        notifyDataSetChanged();
     }
 }

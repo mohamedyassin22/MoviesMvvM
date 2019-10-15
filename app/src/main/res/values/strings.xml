@@ -2,4 +2,11 @@
     <string name="app_name">MoviesMvvm</string>
     <string name="api_key" translatable="false">f6e0298cc8b4ef5eb6ecd99765510e60</string>
     <string name="error">Something went wrong</string>
+    <string name="popular">Popular</string>
+    <string name="upcome">Upcoming</string>
+    <string name="now_play">Now Playing</string>
+    <string name="top_rated">Top Rated</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

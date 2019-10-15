@@ -1,61 +1,93 @@
 package com.movies.moviesmvvm.activity;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
-import android.databinding.DataBindingUtil;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Toast;
 
-import com.movies.moviesmvvm.Injection;
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.movies.moviesmvvm.R;
-import com.movies.moviesmvvm.adapter.movieExpandableListAdapter;
-import com.movies.moviesmvvm.databinding.ActivityMainBinding;
-import com.movies.moviesmvvm.model.ExpandableList;
-import com.movies.moviesmvvm.view_model.MainViewModel;
-import com.movies.moviesmvvm.view_model.MainViewModelFactory;
+import com.movies.moviesmvvm.fragment.MainFragment;
 
-import java.util.ArrayList;
-import java.util.List;
+import androidx.appcompat.app.AppCompatActivity;
+
+import static com.movies.moviesmvvm.Util.NOW_PLAYING;
+import static com.movies.moviesmvvm.Util.POPULAR;
+import static com.movies.moviesmvvm.Util.TOP_RATED;
+import static com.movies.moviesmvvm.Util.UPCOMING;
 
 public class MainActivity extends AppCompatActivity {
-    private static String API_KEY;
-    private Context mContext;
-    List<ExpandableList> expandableLists = new ArrayList<>();
-
-    movieExpandableListAdapter listAdapter;
+    AHBottomNavigationItem popular, upcoming, nowPlaying, topRated;
+    private AHBottomNavigation bottomNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final ActivityMainBinding activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        setContentView(R.layout.activity_main);
+        bottomNavigation = findViewById(R.id.bottom_navigation);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.container,
+                        MainFragment.newInstance(POPULAR))
+                .commit();
+        setupBottomNavigation();
 
-        mContext = this;
-        listAdapter = new movieExpandableListAdapter(mContext, expandableLists);
-        activityMainBinding.lvExp.setVisibility(View.GONE);
-        activityMainBinding.pbLoading.setVisibility(View.VISIBLE);
-        activityMainBinding.setAdapter(listAdapter);
-        final MainViewModel mainViewModel = ViewModelProviders.of(this,
-                new MainViewModelFactory(Injection.provideMovieRepository(this)))
-                .get(MainViewModel.class);
+    }
+
+    private void setupBottomNavigation() {
+        popular = new AHBottomNavigationItem(getString(R.string.popular), R.drawable.ic_popular);
+        upcoming = new AHBottomNavigationItem(getString(R.string.upcome), R.drawable.ic_upcoming);
+        nowPlaying = new AHBottomNavigationItem(getString(R.string.now_play), R.drawable.ic_now_playing);
+        topRated = new AHBottomNavigationItem(getString(R.string.top_rated), R.drawable.ic_top_rated);
+
+        bottomNavigation.addItem(popular);
+        bottomNavigation.addItem(upcoming);
+        bottomNavigation.addItem(nowPlaying);
+        bottomNavigation.addItem(topRated);
+
+        bottomNavigation.setAccentColor(getResources().getColor(R.color.colorWhite));
+        bottomNavigation.setInactiveColor(getResources().getColor(R.color.colorGrey));
+        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#050505"));
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
+
+        bottomNavigation.setOnTabSelectedListener((position, wasSelected) -> {
+            switch (position) {
+                case 0:
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.container,
+                                    MainFragment.newInstance(POPULAR))
+                            .commit();
+                    return true;
+                case 1:
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.container,
+                                    MainFragment.newInstance(UPCOMING))
+                            .commit();
+
+                    return true;
+
+                case 2:
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.container,
+                                    MainFragment.newInstance(NOW_PLAYING))
+                            .commit();
+                    return true;
+
+                case 3:
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.container,
+                                    MainFragment.newInstance(TOP_RATED))
+                            .commit();
+                    return true;
 
 
-        mainViewModel.getMovies().observe(this, new Observer<List<ExpandableList>>() {
-            @Override
-            public void onChanged(@Nullable List<ExpandableList> expandableLists) {
-                if (expandableLists != null) {
-                    listAdapter.addItem(expandableLists);
-                    activityMainBinding.lvExp.setVisibility(View.VISIBLE);
-                    activityMainBinding.pbLoading.setVisibility(View.GONE);
-                } else {
-                    activityMainBinding.pbLoading.setVisibility(View.GONE);
-                    Toast.makeText(mContext, R.string.error, Toast.LENGTH_LONG).show();
-                }
-
+                default:
+                    return false;
             }
+
         });
 
 

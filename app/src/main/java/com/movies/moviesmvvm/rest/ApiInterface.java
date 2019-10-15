@@ -21,8 +21,6 @@ public interface ApiInterface {
     @GET("movie/now_playing")
     Observable<MoviesResponse> getNowPlayingMovies(@Query("api_key") String apiKey);
 
-    @GET("movie/latest")
-    Observable<MoviesResponse> getLatestMovies(@Query("api_key") String apiKey);
 
 
 }

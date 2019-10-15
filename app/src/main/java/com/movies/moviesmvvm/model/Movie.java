@@ -1,6 +1,5 @@
 package com.movies.moviesmvvm.model;
 
-import android.databinding.BindingAdapter;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.ImageView;
@@ -10,6 +9,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.databinding.BindingAdapter;
 
 public class Movie implements Parcelable {
 
