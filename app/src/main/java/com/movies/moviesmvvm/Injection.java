@@ -9,8 +9,8 @@ import com.movies.moviesmvvm.rest.ApiInterface;
 
 public class Injection {
 
-    public static MovieRepo provideMovieRepository(Context context) {
-        return new MovieRepoImp(provideAPIService(), provideAPIKey(context));
+    public static MovieRepo provideMovieRepository(Context context, String movieType) {
+        return new MovieRepoImp(provideAPIService(), provideAPIKey(context), provideMovieType(movieType));
     }
 
     private static ApiInterface provideAPIService() {
@@ -20,4 +20,9 @@ public class Injection {
     private static String provideAPIKey(Context context) {
         return context.getString(R.string.api_key);
     }
+
+    private static String provideMovieType(String movieType) {
+        return movieType;
+    }
+
 }

@@ -23,6 +23,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.paging.PagedList;
 
 import static com.movies.moviesmvvm.Util.NOW_PLAYING;
 import static com.movies.moviesmvvm.Util.POPULAR;
@@ -55,7 +56,7 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        moviesAdapter = new MovieAdapter(mMovies);
+        moviesAdapter = new MovieAdapter();
         FragmentMainBinding fragmentMainBinding =
                 DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false);
         fragmentMainBinding.moviesRecyclerView.setVisibility(View.GONE);
@@ -66,38 +67,35 @@ public class MainFragment extends Fragment {
             switch (movieType) {
                 case POPULAR:
                     mainViewModel = ViewModelProviders.of(this,
-                            new MainViewModelFactory(Injection.provideMovieRepository(getActivity()), POPULAR))
+                            new MainViewModelFactory(Injection.provideMovieRepository(getActivity(), POPULAR), POPULAR))
                             .get(MainViewModel.class);
                     break;
                 case UPCOMING:
                     mainViewModel = ViewModelProviders.of(this,
-                            new MainViewModelFactory(Injection.provideMovieRepository(getActivity()), UPCOMING))
+                            new MainViewModelFactory(Injection.provideMovieRepository(getActivity(), UPCOMING), UPCOMING))
                             .get(MainViewModel.class);
                     break;
                 case NOW_PLAYING:
                     mainViewModel = ViewModelProviders.of(this,
-                            new MainViewModelFactory(Injection.provideMovieRepository(getActivity()), NOW_PLAYING))
+                            new MainViewModelFactory(Injection.provideMovieRepository(getActivity(), NOW_PLAYING), NOW_PLAYING))
                             .get(MainViewModel.class);
                     break;
                 case TOP_RATED:
                     mainViewModel = ViewModelProviders.of(this,
-                            new MainViewModelFactory(Injection.provideMovieRepository(getActivity()), TOP_RATED))
+                            new MainViewModelFactory(Injection.provideMovieRepository(getActivity(), TOP_RATED), TOP_RATED))
                             .get(MainViewModel.class);
                     break;
                 default:
-                    mainViewModel = ViewModelProviders.of(this,
-                            new MainViewModelFactory(Injection.provideMovieRepository(getActivity()), POPULAR))
-                            .get(MainViewModel.class);
-
+                    break;
 
             }
         }
 
-        mainViewModel.getMovies().observe(this, new Observer<List<Movie>>() {
+        mainViewModel.getMovies().observe(this, new Observer<PagedList<Movie>>() {
             @Override
-            public void onChanged(@Nullable List<Movie> movies) {
+            public void onChanged(@Nullable PagedList<Movie> movies) {
                 if (movies != null) {
-                    moviesAdapter.addItem(movies);
+                    moviesAdapter.submitList(movies);
                     fragmentMainBinding.moviesRecyclerView.setVisibility(View.VISIBLE);
                     fragmentMainBinding.pbLoading.setVisibility(View.GONE);
                 } else {

@@ -8,19 +8,32 @@ import com.movies.moviesmvvm.R;
 import com.movies.moviesmvvm.databinding.MoviesListItemBinding;
 import com.movies.moviesmvvm.model.Movie;
 
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
-    private List<Movie> movies;
+public class MovieAdapter extends PagedListAdapter<Movie, MovieAdapter.MovieViewHolder> {
     private Context context;
 
-    public MovieAdapter(List<Movie> movies) {
-        this.movies = movies;
+
+    private static DiffUtil.ItemCallback<Movie> DIFF_CALLBACK = new DiffUtil.ItemCallback<Movie>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Movie movie, @NonNull Movie t1) {
+            return movie.getId().equals(t1.getId());
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Movie movie, @NonNull Movie t1) {
+            return movie.getId().equals(t1.getId());
+        }
+    };
+
+    public MovieAdapter() {
+        super(DIFF_CALLBACK);
     }
+
     @NonNull
     @Override
     public MovieAdapter.MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
@@ -33,13 +46,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MovieAdapter.MovieViewHolder holder, int position) {
-        holder.moviesListItemBinding.setMovie(movies.get(position));
+        Movie movie = getItem(position);
+        if (movie != null) {
+            holder.moviesListItemBinding.setMovie(movie);
+        }
     }
 
-    @Override
-    public int getItemCount() {
-        return movies.size();
-    }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
 private MoviesListItemBinding moviesListItemBinding;
@@ -49,8 +61,4 @@ private MoviesListItemBinding moviesListItemBinding;
         }
     }
 
-    public void addItem(List<Movie> movies) {
-        this.movies.addAll(movies);
-        notifyDataSetChanged();
-    }
 }
