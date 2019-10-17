@@ -10,11 +10,11 @@ import com.movies.moviesmvvm.model.Movie;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
-import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MovieAdapter extends PagedListAdapter<Movie, MovieAdapter.MovieViewHolder> {
+public class MovieAdapter extends ListAdapter<Movie, MovieAdapter.MovieViewHolder> {
     private Context context;
 
 

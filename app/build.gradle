@@ -50,4 +50,8 @@ dependencies {
     implementation 'androidx.paging:paging-runtime:2.0.0-beta01'
     implementation 'com.aurelhubert:ahbottomnavigation:2.3.4'
 
+    /*Room*/
+    implementation "android.arch.persistence.room:runtime:1.1.1"
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
+
 }

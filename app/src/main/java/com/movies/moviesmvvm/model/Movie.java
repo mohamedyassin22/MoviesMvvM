@@ -10,40 +10,70 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName = "movie_table")
 public class Movie implements Parcelable {
 
     private static final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
     @SerializedName("poster_path")
     private String posterPath;
+
+    @Ignore
     @SerializedName("adult")
     private boolean adult;
+
     @SerializedName("overview")
     private String overview;
+
     @SerializedName("release_date")
     private String releaseDate;
+
+    @Ignore
     @SerializedName("genre_ids")
     private List<Integer> genreIds = new ArrayList<Integer>();
+
+    @PrimaryKey
+    @NonNull
     @SerializedName("id")
     private Integer id;
+
+    @Ignore
     @SerializedName("original_title")
     private String originalTitle;
+
+    @Ignore
     @SerializedName("original_language")
     private String originalLanguage;
+
     @SerializedName("title")
     private String title;
+
     @SerializedName("backdrop_path")
     private String backdropPath;
+
+    @Ignore
     @SerializedName("popularity")
     private Double popularity;
+
+    @Ignore
     @SerializedName("vote_count")
     private Integer voteCount;
+
+    @Ignore
     @SerializedName("video")
     private Boolean video;
+
     @SerializedName("vote_average")
     private Double voteAverage;
+
+    public Movie() {
+    }
 
     public Movie(String posterPath, boolean adult, String overview, String releaseDate,
                  List<Integer> genreIds, Integer id, String originalTitle, String originalLanguage,
@@ -154,62 +184,68 @@ public class Movie implements Parcelable {
 
 
     public String getPosterPath() {
-        return IMAGE_BASE_URL + posterPath;
+        if (!posterPath.contains(IMAGE_BASE_URL))
+            return IMAGE_BASE_URL + posterPath;
+        else
+            return posterPath;
     }
 
-    public boolean isAdult() {
-        return adult;
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
     }
 
     public String getOverview() {
         return overview;
     }
 
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
     public String getReleaseDate() {
         return releaseDate;
     }
 
-    public List<Integer> getGenreIds() {
-        return genreIds;
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
+    @NonNull
     public Integer getId() {
         return id;
     }
 
-    public String getOriginalTitle() {
-        return originalTitle;
-    }
-
-    public String getOriginalLanguage() {
-        return originalLanguage;
+    public void setId(@NonNull Integer id) {
+        this.id = id;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getBackdropPath() {
-        return backdropPath;
+        if (backdropPath != null && !backdropPath.contains(IMAGE_BASE_URL))
+            return IMAGE_BASE_URL + backdropPath;
+        else
+            return backdropPath;
     }
 
-    public Double getPopularity() {
-        return popularity;
-    }
-
-    public Integer getVoteCount() {
-        return voteCount;
-    }
-
-    public Boolean getVideo() {
-        return video;
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
     }
 
     public Double getVoteAverage() {
         return voteAverage;
     }
 
-    //ToDo 5: create method to load your image inside the model
+    public void setVoteAverage(Double voteAverage) {
+        this.voteAverage = voteAverage;
+    }
+
     @BindingAdapter("loadImage")
     public static void loadImage(ImageView imageView, String url) {
         Glide.with(imageView.getContext()).load(url).into(imageView);

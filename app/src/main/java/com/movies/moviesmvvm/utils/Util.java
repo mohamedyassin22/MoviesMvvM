@@ -1,4 +1,4 @@
-package com.movies.moviesmvvm;
+package com.movies.moviesmvvm.utils;
 
 public class Util {
     public static final String POPULAR = "popular";

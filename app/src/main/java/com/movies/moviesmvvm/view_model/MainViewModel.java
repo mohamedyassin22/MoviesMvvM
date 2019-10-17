@@ -3,20 +3,21 @@ package com.movies.moviesmvvm.view_model;
 import com.movies.moviesmvvm.model.Movie;
 import com.movies.moviesmvvm.repo.MovieRepo;
 
+import java.util.List;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.paging.PagedList;
 
-import static com.movies.moviesmvvm.Util.NOW_PLAYING;
-import static com.movies.moviesmvvm.Util.POPULAR;
-import static com.movies.moviesmvvm.Util.TOP_RATED;
-import static com.movies.moviesmvvm.Util.UPCOMING;
+import static com.movies.moviesmvvm.utils.Util.NOW_PLAYING;
+import static com.movies.moviesmvvm.utils.Util.POPULAR;
+import static com.movies.moviesmvvm.utils.Util.TOP_RATED;
+import static com.movies.moviesmvvm.utils.Util.UPCOMING;
 
 public class MainViewModel extends ViewModel {
     private static final String TAG = MainViewModel.class.getSimpleName();
 
 
-    private LiveData<PagedList<Movie>> movieLists;
+    private LiveData<List<Movie>> movieLists;
 
 
     public MainViewModel(MovieRepo movieRepo, String movieType) {
@@ -43,7 +44,7 @@ public class MainViewModel extends ViewModel {
     }
 
 
-    public LiveData<PagedList<Movie>> getMovies() {
+    public LiveData<List<Movie>> getMovies() {
         return movieLists;
     }
 

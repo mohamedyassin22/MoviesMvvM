@@ -10,10 +10,10 @@ import com.movies.moviesmvvm.fragment.MainFragment;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.movies.moviesmvvm.Util.NOW_PLAYING;
-import static com.movies.moviesmvvm.Util.POPULAR;
-import static com.movies.moviesmvvm.Util.TOP_RATED;
-import static com.movies.moviesmvvm.Util.UPCOMING;
+import static com.movies.moviesmvvm.utils.Util.NOW_PLAYING;
+import static com.movies.moviesmvvm.utils.Util.POPULAR;
+import static com.movies.moviesmvvm.utils.Util.TOP_RATED;
+import static com.movies.moviesmvvm.utils.Util.UPCOMING;
 
 public class MainActivity extends AppCompatActivity {
     AHBottomNavigationItem popular, upcoming, nowPlaying, topRated;

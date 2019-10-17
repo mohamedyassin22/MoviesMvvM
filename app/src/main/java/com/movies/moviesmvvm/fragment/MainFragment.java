@@ -18,17 +18,14 @@ import com.movies.moviesmvvm.view_model.MainViewModelFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.paging.PagedList;
 
-import static com.movies.moviesmvvm.Util.NOW_PLAYING;
-import static com.movies.moviesmvvm.Util.POPULAR;
-import static com.movies.moviesmvvm.Util.TOP_RATED;
-import static com.movies.moviesmvvm.Util.UPCOMING;
+import static com.movies.moviesmvvm.utils.Util.NOW_PLAYING;
+import static com.movies.moviesmvvm.utils.Util.POPULAR;
+import static com.movies.moviesmvvm.utils.Util.TOP_RATED;
+import static com.movies.moviesmvvm.utils.Util.UPCOMING;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -91,9 +88,7 @@ public class MainFragment extends Fragment {
             }
         }
 
-        mainViewModel.getMovies().observe(this, new Observer<PagedList<Movie>>() {
-            @Override
-            public void onChanged(@Nullable PagedList<Movie> movies) {
+        mainViewModel.getMovies().observe(this, movies -> {
                 if (movies != null) {
                     moviesAdapter.submitList(movies);
                     fragmentMainBinding.moviesRecyclerView.setVisibility(View.VISIBLE);
@@ -102,7 +97,7 @@ public class MainFragment extends Fragment {
                     fragmentMainBinding.pbLoading.setVisibility(View.GONE);
                     Toast.makeText(getActivity(), R.string.error, Toast.LENGTH_LONG).show();
                 }
-            }
+
         });
         return fragmentMainBinding.getRoot();
     }
