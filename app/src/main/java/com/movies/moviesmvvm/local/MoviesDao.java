@@ -1,14 +1,14 @@
 package com.movies.moviesmvvm.local;
 
-import com.movies.moviesmvvm.model.Movie;
-
-import java.util.List;
-
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+
+import com.movies.moviesmvvm.model.Movie;
+
+import java.util.List;
 
 @Dao
 public interface MoviesDao {
@@ -29,5 +29,14 @@ public interface MoviesDao {
     LiveData<List<Movie>> getTopRatedMovies();
 
     @Query("DELETE FROM MOVIE_TABLE")
-    void deleteAll();
+    void deletePopular();
+
+    @Query("DELETE FROM MOVIE_TABLE")
+    void deleteUpcoming();
+
+    @Query("DELETE FROM MOVIE_TABLE")
+    void deleteNowPlaying();
+
+    @Query("DELETE FROM MOVIE_TABLE")
+    void deleteTopRated();
 }

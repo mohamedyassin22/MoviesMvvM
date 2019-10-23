@@ -7,6 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.movies.moviesmvvm.Injection;
 import com.movies.moviesmvvm.R;
 import com.movies.moviesmvvm.adapter.MovieAdapter;
@@ -17,15 +21,6 @@ import com.movies.moviesmvvm.view_model.MainViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
-
-import static com.movies.moviesmvvm.utils.Util.NOW_PLAYING;
-import static com.movies.moviesmvvm.utils.Util.POPULAR;
-import static com.movies.moviesmvvm.utils.Util.TOP_RATED;
-import static com.movies.moviesmvvm.utils.Util.UPCOMING;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,31 +56,9 @@ public class MainFragment extends Fragment {
         fragmentMainBinding.setAdapter(moviesAdapter);
         if (getArguments() != null) {
             movieType = getArguments().getString(MOVIE_TYPE);
-            switch (movieType) {
-                case POPULAR:
-                    mainViewModel = ViewModelProviders.of(this,
-                            new MainViewModelFactory(Injection.provideMovieRepository(getActivity(), POPULAR), POPULAR))
-                            .get(MainViewModel.class);
-                    break;
-                case UPCOMING:
-                    mainViewModel = ViewModelProviders.of(this,
-                            new MainViewModelFactory(Injection.provideMovieRepository(getActivity(), UPCOMING), UPCOMING))
-                            .get(MainViewModel.class);
-                    break;
-                case NOW_PLAYING:
-                    mainViewModel = ViewModelProviders.of(this,
-                            new MainViewModelFactory(Injection.provideMovieRepository(getActivity(), NOW_PLAYING), NOW_PLAYING))
-                            .get(MainViewModel.class);
-                    break;
-                case TOP_RATED:
-                    mainViewModel = ViewModelProviders.of(this,
-                            new MainViewModelFactory(Injection.provideMovieRepository(getActivity(), TOP_RATED), TOP_RATED))
-                            .get(MainViewModel.class);
-                    break;
-                default:
-                    break;
-
-            }
+            mainViewModel = ViewModelProviders.of(this,
+                    new MainViewModelFactory(Injection.provideMovieRepository(getActivity(), movieType), movieType))
+                    .get(MainViewModel.class);
         }
 
         mainViewModel.getMovies().observe(this, movies -> {

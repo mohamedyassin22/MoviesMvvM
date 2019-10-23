@@ -1,5 +1,7 @@
 package com.movies.moviesmvvm.repo;
 
+import androidx.lifecycle.LiveData;
+
 import com.movies.moviesmvvm.local.MoviesDao;
 import com.movies.moviesmvvm.model.Movie;
 import com.movies.moviesmvvm.model.MoviesResponse;
@@ -9,7 +11,6 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import androidx.lifecycle.LiveData;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -52,7 +53,7 @@ public class MovieRepoImp implements MovieRepo {
                             executor.execute(() ->
                             {
                                 //clear cache and save new data in cache
-                                cache.deleteAll();
+                                cache.deletePopular();
                                 cache.insert(popularMovies);
                             });
 
@@ -94,7 +95,7 @@ public class MovieRepoImp implements MovieRepo {
                             executor.execute(() ->
                             {
                                 //clear cache and save new data in cache
-                                cache.deleteAll();
+                                cache.deleteUpcoming();
                                 cache.insert(movies);
                             });
 
@@ -137,7 +138,7 @@ public class MovieRepoImp implements MovieRepo {
                             executor.execute(() ->
                             {
                                 //clear cache and save new data in cache
-                                cache.deleteAll();
+                                cache.deleteNowPlaying();
                                 cache.insert(movies);
                             });
                         }
@@ -179,7 +180,7 @@ public class MovieRepoImp implements MovieRepo {
                             executor.execute(() ->
                             {
                                 //clear cache and save new data in cache
-                                cache.deleteAll();
+                                cache.deleteTopRated();
                                 cache.insert(movies);
                             });
                         }

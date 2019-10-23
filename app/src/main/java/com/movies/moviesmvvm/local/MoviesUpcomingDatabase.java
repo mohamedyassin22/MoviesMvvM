@@ -9,16 +9,16 @@ import androidx.room.RoomDatabase;
 import com.movies.moviesmvvm.model.Movie;
 
 @Database(entities = {Movie.class}, version = 1)
-public abstract class MoviesDatabase extends RoomDatabase {
-    private static volatile MoviesDatabase INSTANCE;
+public abstract class MoviesUpcomingDatabase extends RoomDatabase {
+    private static volatile MoviesUpcomingDatabase INSTANCE;
 
-    public static MoviesDatabase getInstance(final Context context) {
+    public static MoviesUpcomingDatabase getInstance(final Context context) {
         if (INSTANCE == null) {
-            synchronized (MoviesDatabase.class) {
+            synchronized (MoviesUpcomingDatabase.class) {
                 if (INSTANCE == null) {
                     // Create database here
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            MoviesDatabase.class, "movies_database")
+                            MoviesUpcomingDatabase.class, "movies_upcoming_database")
                             .build();
                 }
             }

@@ -1,12 +1,12 @@
 package com.movies.moviesmvvm.view_model;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
+
 import com.movies.moviesmvvm.model.Movie;
 import com.movies.moviesmvvm.repo.MovieRepo;
 
 import java.util.List;
-
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
 
 import static com.movies.moviesmvvm.utils.Util.NOW_PLAYING;
 import static com.movies.moviesmvvm.utils.Util.POPULAR;
@@ -36,8 +36,7 @@ public class MainViewModel extends ViewModel {
                 movieLists = movieRepo.loadTopRated();
                 break;
             default:
-                movieLists = movieRepo.loadPopular();
-
+                break;
         }
 
 
