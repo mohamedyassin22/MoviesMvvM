@@ -1,18 +1,17 @@
 package com.movies.moviesmvvm.repo;
 
-import androidx.lifecycle.LiveData;
-
 import com.movies.moviesmvvm.model.Movie;
 
-import java.util.List;
+import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
 
 public interface MovieRepo {
-    LiveData<List<Movie>> loadPopular();
+    LiveData<PagedList<Movie>> loadPopular();
 
-    LiveData<List<Movie>> loadUpcoming();
+    LiveData<PagedList<Movie>> loadUpcoming();
 
-    LiveData<List<Movie>> loadNowPlaying();
+    LiveData<PagedList<Movie>> loadNowPlaying();
 
-    LiveData<List<Movie>> loadTopRated();
+    LiveData<PagedList<Movie>> loadTopRated();
 
 }

@@ -57,7 +57,7 @@ public class Movie implements Parcelable {
     @SerializedName("backdrop_path")
     private String backdropPath;
 
-    @Ignore
+    //    @Ignore
     @SerializedName("popularity")
     private Double popularity;
 
@@ -184,7 +184,7 @@ public class Movie implements Parcelable {
 
 
     public String getPosterPath() {
-        if (!posterPath.contains(IMAGE_BASE_URL))
+        if (posterPath != null && !posterPath.isEmpty() && !posterPath.contains(IMAGE_BASE_URL))
             return IMAGE_BASE_URL + posterPath;
         else
             return posterPath;
@@ -244,6 +244,14 @@ public class Movie implements Parcelable {
 
     public void setVoteAverage(Double voteAverage) {
         this.voteAverage = voteAverage;
+    }
+
+    public Double getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(Double popularity) {
+        this.popularity = popularity;
     }
 
     @BindingAdapter("loadImage")

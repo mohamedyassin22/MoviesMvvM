@@ -2,13 +2,13 @@ package com.movies.moviesmvvm.local;
 
 import android.content.Context;
 
+import com.movies.moviesmvvm.model.Movie;
+
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.movies.moviesmvvm.model.Movie;
-
-@Database(entities = {Movie.class}, version = 1)
+@Database(entities = {Movie.class}, version = 2)
 public abstract class MoviesNowPlayingDatabase extends RoomDatabase {
     private static volatile MoviesNowPlayingDatabase INSTANCE;
 
@@ -19,6 +19,7 @@ public abstract class MoviesNowPlayingDatabase extends RoomDatabase {
                     // Create database here
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             MoviesNowPlayingDatabase.class, "movies_playing_database")
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }
