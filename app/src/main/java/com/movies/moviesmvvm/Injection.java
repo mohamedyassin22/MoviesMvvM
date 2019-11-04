@@ -24,20 +24,20 @@ public class Injection {
                 provideMovieType(movieType), provideMovieDao(context, movieType));
     }
 
-    private static ApiInterface provideAPIService() {
+    public static ApiInterface provideAPIService() {
         return ApiClient.getClient().create(ApiInterface.class);
     }
 
-    private static String provideAPIKey(Context context) {
+    public static String provideAPIKey(Context context) {
         return context.getString(R.string.api_key);
     }
 
-    private static String provideMovieType(String movieType) {
+    public static String provideMovieType(String movieType) {
         return movieType;
     }
 
     //ToDo 7: Inject Movie Dao Creation
-    private static MoviesDao provideMovieDao(Context context, String movieType) {
+    public static MoviesDao provideMovieDao(Context context, String movieType) {
         switch (movieType) {
             case POPULAR:
                 return MoviesDatabase.getInstance(context).moviesDao();
