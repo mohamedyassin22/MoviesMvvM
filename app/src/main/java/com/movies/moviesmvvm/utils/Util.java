@@ -5,4 +5,6 @@ public class Util {
     public static final String UPCOMING = "upcoming";
     public static final String NOW_PLAYING = "nowPlaying";
     public static final String TOP_RATED = "topRated";
+    public static final String WORK_TYPE = "workType";
+
 }

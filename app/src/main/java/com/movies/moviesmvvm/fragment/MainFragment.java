@@ -10,6 +10,11 @@ import android.widget.Toast;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.movies.moviesmvvm.Injection;
 import com.movies.moviesmvvm.R;
@@ -18,9 +23,13 @@ import com.movies.moviesmvvm.databinding.FragmentMainBinding;
 import com.movies.moviesmvvm.model.Movie;
 import com.movies.moviesmvvm.view_model.MainViewModel;
 import com.movies.moviesmvvm.view_model.MainViewModelFactory;
+import com.movies.moviesmvvm.worker.MoviesWorker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static com.movies.moviesmvvm.utils.Util.WORK_TYPE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,16 +71,34 @@ public class MainFragment extends Fragment {
         }
 
         mainViewModel.getMovies().observe(this, movies -> {
-                if (movies != null) {
-                    moviesAdapter.submitList(movies);
-                    fragmentMainBinding.moviesRecyclerView.setVisibility(View.VISIBLE);
-                    fragmentMainBinding.pbLoading.setVisibility(View.GONE);
-                } else {
-                    fragmentMainBinding.pbLoading.setVisibility(View.GONE);
-                    Toast.makeText(getActivity(), R.string.error, Toast.LENGTH_LONG).show();
-                }
+            if (movies != null) {
+                moviesAdapter.submitList(movies);
+                fragmentMainBinding.moviesRecyclerView.setVisibility(View.VISIBLE);
+                fragmentMainBinding.pbLoading.setVisibility(View.GONE);
+            } else {
+                fragmentMainBinding.pbLoading.setVisibility(View.GONE);
+                Toast.makeText(getActivity(), R.string.error, Toast.LENGTH_LONG).show();
+            }
 
         });
+
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                //.setRequiresCharging(true)
+                // .setRequiresBatteryNotLow(true)
+                //.setRequiresStorageNotLow(true)
+                .build();
+
+
+        //If you need to send data to worker
+        Data source = new Data.Builder()
+                .putString(WORK_TYPE, movieType)
+                .build();
+        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(MoviesWorker.class, 15, TimeUnit.MINUTES)
+                .setConstraints(constraints)
+                .setInputData(source)
+                .build();
+        WorkManager.getInstance().enqueue(periodicWorkRequest);
         return fragmentMainBinding.getRoot();
     }
 

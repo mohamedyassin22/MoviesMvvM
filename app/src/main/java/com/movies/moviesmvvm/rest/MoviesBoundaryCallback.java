@@ -1,6 +1,9 @@
 package com.movies.moviesmvvm.rest;
 
 
+import androidx.annotation.NonNull;
+import androidx.paging.PagedList;
+
 import com.movies.moviesmvvm.local.MoviesDao;
 import com.movies.moviesmvvm.model.Movie;
 import com.movies.moviesmvvm.model.MoviesResponse;
@@ -8,12 +11,9 @@ import com.movies.moviesmvvm.model.MoviesResponse;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import androidx.annotation.NonNull;
-import androidx.paging.PagedList;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.movies.moviesmvvm.utils.Util.NOW_PLAYING;
 import static com.movies.moviesmvvm.utils.Util.POPULAR;
@@ -23,7 +23,7 @@ import static com.movies.moviesmvvm.utils.Util.UPCOMING;
 
 public class MoviesBoundaryCallback extends PagedList.BoundaryCallback<Movie> {
 
-    private int lastRequestedPage = 1;
+    private int lastRequestedPage = 4;
     private boolean isRequestInProgress = false;
 
     private ApiInterface service;
@@ -45,161 +45,113 @@ public class MoviesBoundaryCallback extends PagedList.BoundaryCallback<Movie> {
                 if (isRequestInProgress) return;
 
                 isRequestInProgress = true;
-                service.getPopularMovies(apiKey, lastRequestedPage)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<MoviesResponse>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
+                service.getPopularMovies(apiKey, lastRequestedPage).enqueue(new Callback<MoviesResponse>() {
+                    @Override
+                    public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+                        isRequestInProgress = false;
 
-                            }
+                        if (response.isSuccessful() && response.body() != null) {
+                            lastRequestedPage++;
 
-                            @Override
-                            public void onNext(MoviesResponse moviesResponse) {
-                                isRequestInProgress = false;
-                                if (moviesResponse.getResults() != null) {
-                                    lastRequestedPage++;
+                            executor.execute(() -> {
+//                                if (lastRequestedPage == 1)
+//                                    cache.deletePopular();
 
-                                    executor.execute(() -> {
-                                        if (lastRequestedPage == 1)
-                                            cache.deletePopular();
+                                cache.insert(response.body().getResults());
+                            });
+                        }
 
-                                        cache.insert(moviesResponse.getResults());
-                                    });
+                    }
 
-                                }
-                            }
+                    @Override
+                    public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                        isRequestInProgress = false;
+                    }
+                });
 
-                            @Override
-                            public void onError(Throwable e) {
-                                isRequestInProgress = false;
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
                 break;
             case UPCOMING:
                 if (isRequestInProgress) return;
 
                 isRequestInProgress = true;
-                service.getUpcomingMovies(apiKey, lastRequestedPage)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<MoviesResponse>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
+                service.getUpcomingMovies(apiKey, lastRequestedPage).enqueue(new Callback<MoviesResponse>() {
+                    @Override
+                    public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+                        isRequestInProgress = false;
+                        if (response.isSuccessful() && response.body() != null) {
+                            lastRequestedPage++;
 
-                            }
+                            executor.execute(() -> {
+//                                if (lastRequestedPage == 1)
+//                                    cache.deleteUpcoming();
 
-                            @Override
-                            public void onNext(MoviesResponse moviesResponse) {
-                                isRequestInProgress = false;
-                                if (moviesResponse.getResults() != null) {
-                                    lastRequestedPage++;
+                                cache.insert(response.body().getResults());
+                            });
 
-                                    executor.execute(() -> {
-                                        if (lastRequestedPage == 1)
-                                            cache.deleteUpcoming();
+                        }
+                    }
 
-                                        cache.insert(moviesResponse.getResults());
-                                    });
-
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                isRequestInProgress = false;
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
+                    @Override
+                    public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                        isRequestInProgress = false;
+                    }
+                });
                 break;
             case NOW_PLAYING:
                 if (isRequestInProgress) return;
 
                 isRequestInProgress = true;
-                service.getNowPlayingMovies(apiKey, lastRequestedPage)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<MoviesResponse>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
+                service.getNowPlayingMovies(apiKey, lastRequestedPage).enqueue(new Callback<MoviesResponse>() {
+                    @Override
+                    public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+                        isRequestInProgress = false;
+                        if (response.isSuccessful() && response.body() != null) {
+                            lastRequestedPage++;
 
-                            }
+                            executor.execute(() -> {
+//                                if (lastRequestedPage == 1)
+//                                    cache.deleteNowPlaying();
 
-                            @Override
-                            public void onNext(MoviesResponse moviesResponse) {
-                                isRequestInProgress = false;
-                                if (moviesResponse.getResults() != null) {
-                                    lastRequestedPage++;
+                                cache.insert(response.body().getResults());
+                            });
 
-                                    executor.execute(() -> {
-                                        if (lastRequestedPage == 1)
-                                            cache.deleteNowPlaying();
+                        }
+                    }
 
-                                        cache.insert(moviesResponse.getResults());
-                                    });
+                    @Override
+                    public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                        isRequestInProgress = false;
+                    }
+                });
 
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                isRequestInProgress = false;
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
                 break;
             case TOP_RATED:
                 if (isRequestInProgress) return;
 
                 isRequestInProgress = true;
-                service.getTopRatedMovies(apiKey, lastRequestedPage)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<MoviesResponse>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
+                service.getTopRatedMovies(apiKey, lastRequestedPage).enqueue(new Callback<MoviesResponse>() {
+                    @Override
+                    public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+                        isRequestInProgress = false;
+                        if (response.isSuccessful() && response.body() != null) {
+                            lastRequestedPage++;
 
-                            }
+                            executor.execute(() -> {
+//                                if (lastRequestedPage == 1)
+//                                    cache.deleteTopRated();
 
-                            @Override
-                            public void onNext(MoviesResponse moviesResponse) {
-                                isRequestInProgress = false;
-                                if (moviesResponse.getResults() != null) {
-                                    lastRequestedPage++;
+                                cache.insert(response.body().getResults());
+                            });
 
-                                    executor.execute(() -> {
-                                        if (lastRequestedPage == 1)
-                                            cache.deleteTopRated();
+                        }
+                    }
 
-                                        cache.insert(moviesResponse.getResults());
-                                    });
+                    @Override
+                    public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                        isRequestInProgress = false;
 
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                isRequestInProgress = false;
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
+                    }
+                });
                 break;
             default:
                 break;
